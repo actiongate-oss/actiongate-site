@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ActionGate — Deterministic Execution Gates for AI Agents</title>
-<meta name="description" content="Composable, pre-execution governance primitives for autonomous AI agents. Rate limits, cost caps, policy rules, and audit trails — before your agent acts.">
-<meta property="og:title" content="ActionGate — Execution Gates for AI Agents">
-<meta property="og:description" content="Deterministic, pre-execution governance for autonomous agents. Composable primitives that enforce cost caps, rate limits, policy rules, and audit trails.">
+<title>ActionGate — Before Your Agent Acts, We Check</title>
+<meta name="description" content="Deterministic enforcement primitives for autonomous AI agents. Rate limits, cost caps, and policy rules — evaluated in microseconds, before your agent acts.">
+<meta property="og:title" content="ActionGate — Before Your Agent Acts, We Check">
+<meta property="og:description" content="Deterministic enforcement primitives for autonomous AI agents. Rate limits, cost caps, and policy rules — evaluated in microseconds.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://actiongate.dev">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="ActionGate — Execution Gates for AI Agents">
-<meta name="twitter:description" content="Composable, pre-execution governance primitives for autonomous AI agents. pip install actiongate.">
+<meta name="twitter:title" content="ActionGate — Before Your Agent Acts, We Check">
+<meta name="twitter:description" content="Deterministic enforcement primitives for AI agents. pip install actiongate.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -398,6 +398,8 @@
     letter-spacing: -0.03em;
     margin-bottom: 1rem;
     line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .section-desc {
@@ -581,6 +583,7 @@
   /* ── COMPARISON TABLE ── */
   .compare-table {
     width: 100%;
+    min-width: 600px;
     border-collapse: collapse;
     margin-top: 2rem;
     font-size: 0.9rem;
@@ -619,7 +622,8 @@
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 10px;
-    overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* ── CTA ── */
@@ -742,9 +746,10 @@
   <ul class="nav-links">
     <li><a href="#gates">Gates</a></li>
     <li><a href="#code">Quick Start</a></li>
+    <li><a href="#demo">Demo</a></li>
     <li><a href="#compare">Why Us</a></li>
     <li><a href="https://github.com/actiongate-oss" target="_blank">GitHub</a></li>
-    <li><a href="https://github.com/actiongate-oss/actiongate#readme" target="_blank">Docs</a></li>
+    <li><a href="https://github.com/orgs/actiongate-oss/repositories" target="_blank">Docs</a></li>
     <li><a href="#cta" class="nav-cta">★ Star on GitHub</a></li>
   </ul>
 </nav>
@@ -758,14 +763,14 @@
     </div>
 
     <h1>
-      <span class="accent">Execution gates</span><br>
-      for AI agents
+      <span class="accent">Before your agent acts,</span><br>
+      we check.
     </h1>
 
     <p class="hero-sub">
-      Deterministic, pre-execution governance for autonomous agents.
-      Composable primitives that enforce cost caps, rate limits, policy rules,
-      and audit trails — before your agent acts.
+      Deterministic enforcement primitives for autonomous AI agents.
+      Rate limits, cost caps, and policy rules — evaluated in microseconds,
+      before your agent acts. Not a platform. Not a dashboard. Primitives.
     </p>
 
     <div class="hero-actions">
@@ -866,10 +871,10 @@
 <!-- ── GATES ── -->
 <section id="gates" class="reveal">
   <div class="section-label">// Composable Primitives</div>
-  <h2 class="section-title">Four gates. One execution layer.</h2>
+  <h2 class="section-title">Four primitives. One enforcement layer.</h2>
   <p class="section-desc">
-    Each gate is independently deployable. Together they form a deterministic
-    enforcement layer that sits between your agent and every action it takes.
+    Each primitive is independently deployable, pip-installable, cloud-agnostic,
+    and auditable in an afternoon. No vendor lock-in. Runs anywhere Python runs.
   </p>
 
   <div class="gates-grid">
@@ -984,12 +989,493 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
 </section>
 
 <!-- ── COMPARE ── -->
+
+<!-- ── LIVE DEMO ── -->
+<section id="demo" class="reveal">
+  <div class="section-label">// How It Works</div>
+  <h2 class="section-title">Three gates, one pipeline.</h2>
+  <p class="section-desc">
+    Three gates evaluate in sequence. Every action must pass all three before execution.
+    Click a scenario to see the pipeline in real time.
+  </p>
+
+  <div class="demo-scenarios">
+    <button class="demo-btn active" data-scenario="allow">
+      <span class="demo-btn-dot" style="background: var(--accent-green);"></span>
+      Normal API call
+    </button>
+    <button class="demo-btn" data-scenario="rate">
+      <span class="demo-btn-dot" style="background: var(--accent-red);"></span>
+      Rate limit hit
+    </button>
+    <button class="demo-btn" data-scenario="budget">
+      <span class="demo-btn-dot" style="background: var(--accent-red);"></span>
+      Budget exceeded
+    </button>
+    <button class="demo-btn" data-scenario="policy">
+      <span class="demo-btn-dot" style="background: var(--accent-red);"></span>
+      Policy violation
+    </button>
+    <button class="demo-btn" data-scenario="edge">
+      <span class="demo-btn-dot" style="background: var(--accent-amber);"></span>
+      Edge of limits
+    </button>
+  </div>
+
+  <div class="demo-pipeline">
+    <div class="demo-gate" id="demo-ag">
+      <div class="demo-gate-header">
+        <span class="demo-gate-name">ActionGate</span>
+        <span class="demo-gate-time" id="demo-ag-time">—</span>
+      </div>
+      <div class="demo-gate-check" id="demo-ag-check">rate limit check</div>
+      <div class="demo-gate-verdict" id="demo-ag-verdict">waiting</div>
+    </div>
+
+    <div class="demo-connector"><span>→</span></div>
+
+    <div class="demo-gate" id="demo-bg">
+      <div class="demo-gate-header">
+        <span class="demo-gate-name">BudgetGate</span>
+        <span class="demo-gate-time" id="demo-bg-time">—</span>
+      </div>
+      <div class="demo-gate-check" id="demo-bg-check">spend check</div>
+      <div class="demo-gate-verdict" id="demo-bg-verdict">waiting</div>
+    </div>
+
+    <div class="demo-connector"><span>→</span></div>
+
+    <div class="demo-gate" id="demo-rg">
+      <div class="demo-gate-header">
+        <span class="demo-gate-name">RuleGate</span>
+        <span class="demo-gate-time" id="demo-rg-time">—</span>
+      </div>
+      <div class="demo-gate-check" id="demo-rg-check">policy eval</div>
+      <div class="demo-gate-verdict" id="demo-rg-verdict">waiting</div>
+    </div>
+
+    <div class="demo-connector"><span>→</span></div>
+
+    <div class="demo-gate demo-action" id="demo-action">
+      <div class="demo-gate-header">
+        <span class="demo-gate-name">Action</span>
+        <span class="demo-gate-time" id="demo-action-time">—</span>
+      </div>
+      <div class="demo-gate-check" id="demo-action-check">openai.chat()</div>
+      <div class="demo-gate-verdict" id="demo-action-verdict">pending</div>
+    </div>
+  </div>
+
+  <div class="demo-total">
+    <span>Total gate overhead:</span>
+    <span class="demo-total-time" id="demo-total-time">—</span>
+  </div>
+
+  <div class="demo-log" id="demo-log"></div>
+</section>
+
+<style>
+  .demo-scenarios {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .demo-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .demo-btn:hover { border-color: var(--border-bright); color: var(--text-primary); }
+  .demo-btn.active { border-color: var(--accent-green); color: var(--text-primary); }
+
+  .demo-btn-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .demo-pipeline {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .demo-gate {
+    flex: 1;
+    min-width: 140px;
+    padding: 1.2rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.4s ease;
+  }
+
+  .demo-gate.gate-pass {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 20px rgba(0, 232, 123, 0.08);
+  }
+
+  .demo-gate.gate-warn {
+    border-color: var(--accent-amber);
+    box-shadow: 0 0 20px rgba(255, 184, 77, 0.08);
+  }
+
+  .demo-gate.gate-fail {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 20px rgba(255, 77, 106, 0.08);
+  }
+
+  .demo-gate.gate-skip {
+    opacity: 0.4;
+  }
+
+  .demo-action {
+    background: var(--bg-secondary);
+  }
+
+  .demo-gate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .demo-gate-name {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .demo-gate-time {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .demo-gate-check {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.8rem;
+  }
+
+  .demo-gate-verdict {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+
+  .demo-gate-verdict.v-allow { color: var(--accent-green); }
+  .demo-gate-verdict.v-warn { color: var(--accent-amber); }
+  .demo-gate-verdict.v-block { color: var(--accent-red); }
+  .demo-gate-verdict.v-skip { color: var(--text-muted); }
+  .demo-gate-verdict.v-exec { color: var(--accent-blue); }
+  .demo-gate-verdict.v-blocked { color: var(--accent-red); }
+
+  .demo-connector {
+    display: flex;
+    align-items: center;
+    padding: 0 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+
+  .demo-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+  }
+
+  .demo-total-time {
+    color: var(--accent-green);
+    font-weight: 700;
+  }
+
+  .demo-log {
+    padding: 1rem 1.2rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.9;
+    color: var(--text-muted);
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  .log-allow { color: var(--accent-green); }
+  .log-warn { color: var(--accent-amber); }
+  .log-block { color: var(--accent-red); }
+  .log-info { color: var(--text-secondary); }
+  .log-dim { color: var(--text-muted); }
+</style>
+
+<script>
+(function() {
+  const scenarios = {
+    allow: {
+      ag: { verdict: 'ALLOW', time: '4.2µs', check: 'calls=7 / max=10 in 60s window', pass: true },
+      bg: { verdict: 'ALLOW', time: '0.9µs', check: 'spent=$31.40 / limit=$50.00', pass: true },
+      rg: { verdict: 'ALLOW', time: '3.1µs', check: '2/2 predicates passed', pass: true },
+      action: { verdict: 'EXECUTED', check: 'openai.chat("Summarize Q3 report")', pass: true },
+      logs: [
+        { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
+        { cls: 'log-allow', text: '✓ ActionGate  ALLOW  calls=7/10  window=60s' },
+        { cls: 'log-allow', text: '✓ BudgetGate  ALLOW  cost=$0.03  remaining=$18.57' },
+        { cls: 'log-allow', text: '✓ RuleGate    ALLOW  no_pii=pass  business_hours=pass' },
+        { cls: 'log-info', text: '⚡ All gates passed in 8.2µs — executing action' },
+        { cls: 'log-allow', text: '✓ openai.chat() → 200 OK (342ms)' },
+      ]
+    },
+    rate: {
+      ag: { verdict: 'BLOCK', time: '3.8µs', check: 'calls=10 / max=10 — RATE_LIMIT', pass: false },
+      bg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
+      rg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
+      action: { verdict: 'BLOCKED', check: 'openai.chat("Draft email #47")', pass: false },
+      logs: [
+        { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
+        { cls: 'log-block', text: '✗ ActionGate  BLOCK  calls=10/10  reason=RATE_LIMIT' },
+        { cls: 'log-dim', text: '— BudgetGate  skipped (pipeline halted)' },
+        { cls: 'log-dim', text: '— RuleGate    skipped (pipeline halted)' },
+        { cls: 'log-block', text: '⛔ Action blocked — agent exceeded 10 calls/min' },
+        { cls: 'log-info', text: '↳ Blocked(decision) raised in 3.8µs' },
+      ]
+    },
+    budget: {
+      ag: { verdict: 'ALLOW', time: '4.1µs', check: 'calls=3 / max=10 in 60s window', pass: true },
+      bg: { verdict: 'BLOCK', time: '1.1µs', check: 'spent=$49.82 + $0.50 > $50.00', pass: false },
+      rg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
+      action: { verdict: 'BLOCKED', check: 'openai.chat("Generate 10K-word analysis")', pass: false },
+      logs: [
+        { cls: 'log-dim', text: '→ agent:1 requests openai:chat (est. $0.50)' },
+        { cls: 'log-allow', text: '✓ ActionGate  ALLOW  calls=3/10  window=60s' },
+        { cls: 'log-block', text: '✗ BudgetGate  BLOCK  spent=$49.82 + $0.50 > limit=$50.00' },
+        { cls: 'log-dim', text: '— RuleGate    skipped (pipeline halted)' },
+        { cls: 'log-block', text: '⛔ Action blocked — budget exceeded' },
+        { cls: 'log-info', text: '↳ BudgetExceeded(decision) raised in 5.2µs' },
+      ]
+    },
+    policy: {
+      ag: { verdict: 'ALLOW', time: '4.0µs', check: 'calls=2 / max=10 in 60s window', pass: true },
+      bg: { verdict: 'ALLOW', time: '0.8µs', check: 'spent=$12.30 / limit=$50.00', pass: true },
+      rg: { verdict: 'DENY', time: '2.9µs', check: 'no_pii FAILED — "ssn" detected in query', pass: false },
+      action: { verdict: 'BLOCKED', check: 'db.query("SELECT * WHERE ssn=...")', pass: false },
+      logs: [
+        { cls: 'log-dim', text: '→ agent:1 requests db:query' },
+        { cls: 'log-allow', text: '✓ ActionGate  ALLOW  calls=2/10  window=60s' },
+        { cls: 'log-allow', text: '✓ BudgetGate  ALLOW  cost=$0.01  remaining=$37.69' },
+        { cls: 'log-block', text: '✗ RuleGate    DENY   violated=no_pii  "ssn" in query' },
+        { cls: 'log-block', text: '⛔ Action blocked — policy violation' },
+        { cls: 'log-info', text: '↳ PolicyViolation(decision) raised in 7.7µs' },
+      ]
+    },
+    edge: {
+      ag: { verdict: 'ALLOW', time: '4.5µs', check: 'calls=9 / max=10 — remaining=1', pass: true },
+      bg: { verdict: 'ALLOW', time: '1.2µs', check: 'spent=$49.50 + $0.03 ≤ $50.00 — remaining=$0.47', pass: true },
+      rg: { verdict: 'ALLOW', time: '3.0µs', check: '2/2 predicates passed', pass: true },
+      action: { verdict: 'EXECUTED', check: 'openai.chat("Quick summary")', pass: true },
+      logs: [
+        { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
+        { cls: 'log-allow', text: '✓ ActionGate  ALLOW  calls=9/10  window=60s' },
+        { cls: 'log-warn', text: '  ↳ listener: remaining=1 — next call will be blocked' },
+        { cls: 'log-allow', text: '✓ BudgetGate  ALLOW  cost=$0.03  remaining=$0.47' },
+        { cls: 'log-warn', text: '  ↳ listener: remaining=$0.47 — budget nearly exhausted' },
+        { cls: 'log-allow', text: '✓ RuleGate    ALLOW  no_pii=pass  business_hours=pass' },
+        { cls: 'log-info', text: '⚡ All gates passed in 8.7µs — executing action' },
+        { cls: 'log-allow', text: '✓ openai.chat() → 200 OK (289ms)' },
+      ]
+    }
+  };
+
+  let running = false;
+
+  function reset() {
+    ['ag', 'bg', 'rg'].forEach(id => {
+      const el = document.getElementById('demo-' + id);
+      el.className = 'demo-gate';
+      document.getElementById('demo-' + id + '-verdict').textContent = 'waiting';
+      document.getElementById('demo-' + id + '-verdict').className = 'demo-gate-verdict';
+      document.getElementById('demo-' + id + '-time').textContent = '—';
+    });
+    const action = document.getElementById('demo-action');
+    action.className = 'demo-gate demo-action';
+    document.getElementById('demo-action-verdict').textContent = 'pending';
+    document.getElementById('demo-action-verdict').className = 'demo-gate-verdict';
+    document.getElementById('demo-action-time').textContent = '—';
+    document.getElementById('demo-total-time').textContent = '—';
+    document.getElementById('demo-log').innerHTML = '';
+  }
+
+  function animateGate(id, data, delay) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const el = document.getElementById('demo-' + id);
+        const verdict = document.getElementById('demo-' + id + '-verdict');
+        const timeEl = document.getElementById('demo-' + id + '-time');
+        const checkEl = document.getElementById('demo-' + id + '-check');
+
+        checkEl.textContent = data.check;
+        timeEl.textContent = data.time;
+
+        if (data.pass === true) {
+          el.classList.add('gate-pass');
+          verdict.textContent = data.verdict;
+          verdict.className = 'demo-gate-verdict v-allow';
+        } else if (data.pass === 'warn') {
+          el.classList.add('gate-warn');
+          verdict.textContent = data.verdict;
+          verdict.className = 'demo-gate-verdict v-warn';
+        } else if (data.pass === false) {
+          el.classList.add('gate-fail');
+          verdict.textContent = data.verdict;
+          verdict.className = 'demo-gate-verdict v-block';
+        } else {
+          el.classList.add('gate-skip');
+          verdict.textContent = data.verdict;
+          verdict.className = 'demo-gate-verdict v-skip';
+        }
+        resolve();
+      }, delay);
+    });
+  }
+
+  function addLog(entry, delay) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const log = document.getElementById('demo-log');
+        const line = document.createElement('div');
+        line.className = entry.cls;
+        line.textContent = entry.text;
+        log.appendChild(line);
+        log.scrollTop = log.scrollHeight;
+        resolve();
+      }, delay);
+    });
+  }
+
+  async function runScenario(name) {
+    if (running) return;
+    running = true;
+    reset();
+
+    const s = scenarios[name];
+    const gates = ['ag', 'bg', 'rg'];
+    let totalUs = 0;
+    let step = 0;
+
+    // Log first line
+    await addLog(s.logs[0], 200);
+
+    for (let i = 0; i < gates.length; i++) {
+      const g = gates[i];
+      await animateGate(g, s[g], 400);
+      step++;
+      await addLog(s.logs[step], 150);
+
+      if (s[g].time !== '—') {
+        totalUs += parseFloat(s[g].time);
+      }
+
+      if (s[g].pass === false) {
+        // Block — skip remaining gates
+        for (let j = i + 1; j < gates.length; j++) {
+          await animateGate(gates[j], s[gates[j]], 200);
+          step++;
+          await addLog(s.logs[step], 100);
+        }
+        break;
+      }
+    }
+
+    // Action
+    step++;
+    await new Promise(r => setTimeout(r, 300));
+    const actionEl = document.getElementById('demo-action');
+    const actionVerdict = document.getElementById('demo-action-verdict');
+    const actionCheck = document.getElementById('demo-action-check');
+    actionCheck.textContent = s.action.check;
+
+    if (s.action.pass) {
+      actionEl.classList.add('gate-pass');
+      actionVerdict.textContent = s.action.verdict;
+      actionVerdict.className = 'demo-gate-verdict v-exec';
+      document.getElementById('demo-action-time').textContent = '342ms';
+    } else {
+      actionEl.classList.add('gate-fail');
+      actionVerdict.textContent = s.action.verdict;
+      actionVerdict.className = 'demo-gate-verdict v-blocked';
+      document.getElementById('demo-action-time').textContent = '0ms';
+    }
+
+    // Remaining logs
+    for (let i = step; i < s.logs.length; i++) {
+      await addLog(s.logs[i], 200);
+    }
+
+    document.getElementById('demo-total-time').textContent = totalUs.toFixed(1) + 'µs';
+
+    running = false;
+  }
+
+  // Button handlers
+  document.querySelectorAll('.demo-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (running) return;
+      document.querySelectorAll('.demo-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      runScenario(this.dataset.scenario);
+    });
+  });
+
+  // Auto-run first scenario
+  const firstObserver = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      runScenario('allow');
+      firstObserver.disconnect();
+    }
+  }, { threshold: 0.3 });
+  firstObserver.observe(document.getElementById('demo'));
+})();
+</script>
+
 <section id="compare" class="reveal">
   <div class="section-label">// Why ActionGate</div>
-  <h2 class="section-title">Not a rate limiter. An execution layer.</h2>
+  <h2 class="section-title">Not a platform. Not a dashboard. Primitives.</h2>
   <p class="section-desc">
-    Rate limiters handle one concern. Provider dashboards observe after the fact.
-    ActionGate is a composable enforcement layer at the point of execution.
+    Platforms sell you a dashboard. Observability tools watch after the fact.
+    ActionGate gives you composable enforcement primitives at the point of execution.
   </p>
 
   <div class="compare-highlight">
