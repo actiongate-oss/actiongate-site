@@ -336,6 +336,8 @@
   .verdict-allow { color: var(--accent-green); }
   .verdict-deny { color: var(--accent-red); }
   .verdict-escalate { color: var(--accent-amber); }
+  .verdict-logged { color: var(--accent-blue); }
+  .verdict-logged .verdict-dot { background: var(--accent-blue); box-shadow: 0 0 12px var(--accent-blue); }
 
   /* ── TRUST STRIP ── */
   .trust-strip {
@@ -763,7 +765,7 @@
   <div class="hero-content">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
-      v0.2.0 — Now on PyPI
+      v0.2.1 — All Four Gates Live on PyPI
     </div>
 
     <h1>
@@ -773,7 +775,7 @@
 
     <p class="hero-sub">
       Deterministic enforcement primitives for autonomous AI agents.
-      Rate limits, cost caps, and policy rules — evaluated in microseconds,
+      Rate limits, cost caps, policy rules, and tamper-evident audit trails — evaluated in microseconds,
       before your agent acts. Not a platform. Not a dashboard. Primitives.
     </p>
 
@@ -801,6 +803,11 @@
         <span class="cmd">pip install rulegate</span>
         <span class="copy-hint">click to copy</span>
       </div>
+      <div class="install-box" onclick="navigator.clipboard.writeText('pip install auditgate')">
+        <span class="prompt">$</span>
+        <span class="cmd">pip install auditgate</span>
+        <span class="copy-hint">click to copy</span>
+      </div>
     </div>
   </div>
 
@@ -816,6 +823,10 @@
     <div class="verdict-item verdict-escalate">
       <span class="verdict-dot"></span>
       ESCALATE
+    </div>
+    <div class="verdict-item verdict-logged">
+      <span class="verdict-dot"></span>
+      LOGGED
     </div>
   </div>
 
@@ -903,10 +914,10 @@
       <div class="gate-primitive">Verdict → ALLOW | DENY</div>
     </div>
 
-    <div class="gate-card gate-soon">
-      <div class="gate-status"><span class="gate-status-dot"></span> Coming Q2 2026</div>
+    <div class="gate-card gate-live">
+      <div class="gate-status"><span class="gate-status-dot"></span> Live</div>
       <h3>AuditGate</h3>
-      <p>Compliance-grade logging. Every decision, every verdict, every override — structured, queryable, and tamper-evident.</p>
+      <p>Compliance-grade logging. Every decision, every verdict, every override — structured, queryable, and tamper-evident with hash-chained integrity.</p>
       <div class="gate-primitive">Verdict → LOGGED</div>
     </div>
   </div>
@@ -990,6 +1001,31 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
 <span class="cm"># PII detected or off-hours? Blocked before execution.</span></pre>
     </div>
   </div>
+
+  <div class="code-block" style="margin-top: 1.5rem;">
+    <div class="code-header">
+      <div class="code-dots"><span></span><span></span><span></span></div>
+      <span class="code-filename">audit_example.py</span>
+    </div>
+    <div class="code-body">
+<pre><span class="kw">from</span> auditgate <span class="kw">import</span> <span class="cls">Engine</span>, <span class="cls">Trail</span>, <span class="cls">IntegrityMode</span>
+
+<span class="cm"># Tamper-evident audit trail with hash chaining</span>
+engine <span class="op">=</span> <span class="cls">Engine</span>(integrity<span class="op">=</span><span class="cls">IntegrityMode</span>.CHAIN)
+trail <span class="op">=</span> <span class="cls">Trail</span>(<span class="str">"openai"</span>, <span class="str">"chat"</span>, <span class="str">"agent:1"</span>)
+
+<span class="cm"># Log gate decisions from ActionGate, BudgetGate, RuleGate</span>
+engine.record(trail, {
+    <span class="str">"actiongate"</span>: ag_decision.to_dict(),
+    <span class="str">"budgetgate"</span>: bg_decision.to_dict(),
+    <span class="str">"rulegate"</span>:   rg_decision.to_dict(),
+})
+
+<span class="cm"># Every entry is SHA-256 hashed and chained.</span>
+<span class="cm"># Verify integrity at any time:</span>
+<span class="kw">assert</span> engine.verify(trail)  <span class="cm"># True if no tampering</span></pre>
+    </div>
+  </div>
 </section>
 
 <!-- ── COMPARE ── -->
@@ -997,10 +1033,10 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
 <!-- ── LIVE DEMO ── -->
 <section id="demo" class="reveal">
   <div class="section-label">// How It Works</div>
-  <h2 class="section-title">Three gates, one pipeline.</h2>
+  <h2 class="section-title">Four gates, one pipeline.</h2>
   <p class="section-desc">
-    Three gates evaluate in sequence. Every action must pass all three before execution.
-    Click a scenario to see the pipeline in real time.
+    Four gates evaluate in sequence. Every action must pass the first three before execution.
+    AuditGate logs the full decision chain. Click a scenario to see the pipeline in real time.
   </p>
 
   <div class="demo-scenarios">
@@ -1056,6 +1092,17 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
       </div>
       <div class="demo-gate-check" id="demo-rg-check">policy eval</div>
       <div class="demo-gate-verdict" id="demo-rg-verdict">waiting</div>
+    </div>
+
+    <div class="demo-connector"><span>→</span></div>
+
+    <div class="demo-gate" id="demo-audit">
+      <div class="demo-gate-header">
+        <span class="demo-gate-name">AuditGate</span>
+        <span class="demo-gate-time" id="demo-audit-time">—</span>
+      </div>
+      <div class="demo-gate-check" id="demo-audit-check">audit log</div>
+      <div class="demo-gate-verdict" id="demo-audit-verdict">waiting</div>
     </div>
 
     <div class="demo-connector"><span>→</span></div>
@@ -1197,6 +1244,7 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
   .demo-gate-verdict.v-skip { color: var(--text-muted); }
   .demo-gate-verdict.v-exec { color: var(--accent-blue); }
   .demo-gate-verdict.v-blocked { color: var(--accent-red); }
+  .demo-gate-verdict.v-logged { color: var(--accent-blue); }
 
   .demo-connector {
     display: flex;
@@ -1253,13 +1301,15 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
       ag: { verdict: 'ALLOW', time: '4.2µs', check: 'calls=7 / max=10 in 60s window', pass: true },
       bg: { verdict: 'ALLOW', time: '0.9µs', check: 'spent=$31.40 / limit=$50.00', pass: true },
       rg: { verdict: 'ALLOW', time: '3.1µs', check: '2/2 predicates passed', pass: true },
+      audit: { verdict: 'LOGGED', time: '1.4µs', check: 'chain: 3 decisions → SHA-256 hash', pass: true },
       action: { verdict: 'EXECUTED', check: 'openai.chat("Summarize Q3 report")', pass: true },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
         { cls: 'log-allow', text: '✓ ActionGate  ALLOW  calls=7/10  window=60s' },
         { cls: 'log-allow', text: '✓ BudgetGate  ALLOW  cost=$0.03  remaining=$18.57' },
         { cls: 'log-allow', text: '✓ RuleGate    ALLOW  no_pii=pass  business_hours=pass' },
-        { cls: 'log-info', text: '⚡ All gates passed in 8.2µs — executing action' },
+        { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=a3f8..c2d1  integrity=CHAIN' },
+        { cls: 'log-info', text: '⚡ All gates passed in 9.6µs — executing action' },
         { cls: 'log-allow', text: '✓ openai.chat() → 200 OK (342ms)' },
       ]
     },
@@ -1267,48 +1317,55 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
       ag: { verdict: 'BLOCK', time: '3.8µs', check: 'calls=10 / max=10 — RATE_LIMIT', pass: false },
       bg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
       rg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
+      audit: { verdict: 'LOGGED', time: '1.2µs', check: 'chain: BLOCK recorded → SHA-256 hash', pass: true },
       action: { verdict: 'BLOCKED', check: 'openai.chat("Draft email #47")', pass: false },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
         { cls: 'log-block', text: '✗ ActionGate  BLOCK  calls=10/10  reason=RATE_LIMIT' },
         { cls: 'log-dim', text: '— BudgetGate  skipped (pipeline halted)' },
         { cls: 'log-dim', text: '— RuleGate    skipped (pipeline halted)' },
+        { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=b7e2..f491  block_recorded=true' },
         { cls: 'log-block', text: '⛔ Action blocked — agent exceeded 10 calls/min' },
-        { cls: 'log-info', text: '↳ Blocked(decision) raised in 3.8µs' },
+        { cls: 'log-info', text: '↳ Blocked(decision) raised in 5.0µs' },
       ]
     },
     budget: {
       ag: { verdict: 'ALLOW', time: '4.1µs', check: 'calls=3 / max=10 in 60s window', pass: true },
       bg: { verdict: 'BLOCK', time: '1.1µs', check: 'spent=$49.82 + $0.50 > $50.00', pass: false },
       rg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
+      audit: { verdict: 'LOGGED', time: '1.3µs', check: 'chain: BLOCK recorded → SHA-256 hash', pass: true },
       action: { verdict: 'BLOCKED', check: 'openai.chat("Generate 10K-word analysis")', pass: false },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests openai:chat (est. $0.50)' },
         { cls: 'log-allow', text: '✓ ActionGate  ALLOW  calls=3/10  window=60s' },
         { cls: 'log-block', text: '✗ BudgetGate  BLOCK  spent=$49.82 + $0.50 > limit=$50.00' },
         { cls: 'log-dim', text: '— RuleGate    skipped (pipeline halted)' },
+        { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=c4d9..e7a2  block_recorded=true' },
         { cls: 'log-block', text: '⛔ Action blocked — budget exceeded' },
-        { cls: 'log-info', text: '↳ BudgetExceeded(decision) raised in 5.2µs' },
+        { cls: 'log-info', text: '↳ BudgetExceeded(decision) raised in 6.5µs' },
       ]
     },
     policy: {
       ag: { verdict: 'ALLOW', time: '4.0µs', check: 'calls=2 / max=10 in 60s window', pass: true },
       bg: { verdict: 'ALLOW', time: '0.8µs', check: 'spent=$12.30 / limit=$50.00', pass: true },
       rg: { verdict: 'DENY', time: '2.9µs', check: 'no_pii FAILED — "ssn" detected in query', pass: false },
+      audit: { verdict: 'LOGGED', time: '1.5µs', check: 'chain: DENY recorded → SHA-256 hash', pass: true },
       action: { verdict: 'BLOCKED', check: 'db.query("SELECT * WHERE ssn=...")', pass: false },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests db:query' },
         { cls: 'log-allow', text: '✓ ActionGate  ALLOW  calls=2/10  window=60s' },
         { cls: 'log-allow', text: '✓ BudgetGate  ALLOW  cost=$0.01  remaining=$37.69' },
         { cls: 'log-block', text: '✗ RuleGate    DENY   violated=no_pii  "ssn" in query' },
+        { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=d1f3..b8c4  violation_recorded=true' },
         { cls: 'log-block', text: '⛔ Action blocked — policy violation' },
-        { cls: 'log-info', text: '↳ PolicyViolation(decision) raised in 7.7µs' },
+        { cls: 'log-info', text: '↳ PolicyViolation(decision) raised in 9.2µs' },
       ]
     },
     edge: {
       ag: { verdict: 'ALLOW', time: '4.5µs', check: 'calls=9 / max=10 — remaining=1', pass: true },
       bg: { verdict: 'ALLOW', time: '1.2µs', check: 'spent=$49.50 + $0.03 ≤ $50.00 — remaining=$0.47', pass: true },
       rg: { verdict: 'ALLOW', time: '3.0µs', check: '2/2 predicates passed', pass: true },
+      audit: { verdict: 'LOGGED', time: '1.4µs', check: 'chain: 3 decisions + warnings → SHA-256 hash', pass: true },
       action: { verdict: 'EXECUTED', check: 'openai.chat("Quick summary")', pass: true },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
@@ -1317,7 +1374,8 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
         { cls: 'log-allow', text: '✓ BudgetGate  ALLOW  cost=$0.03  remaining=$0.47' },
         { cls: 'log-warn', text: '  ↳ listener: remaining=$0.47 — budget nearly exhausted' },
         { cls: 'log-allow', text: '✓ RuleGate    ALLOW  no_pii=pass  business_hours=pass' },
-        { cls: 'log-info', text: '⚡ All gates passed in 8.7µs — executing action' },
+        { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=e5a7..d3f2  integrity=CHAIN' },
+        { cls: 'log-info', text: '⚡ All gates passed in 10.1µs — executing action' },
         { cls: 'log-allow', text: '✓ openai.chat() → 200 OK (289ms)' },
       ]
     }
@@ -1326,7 +1384,7 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
   let running = false;
 
   function reset() {
-    ['ag', 'bg', 'rg'].forEach(id => {
+    ['ag', 'bg', 'rg', 'audit'].forEach(id => {
       const el = document.getElementById('demo-' + id);
       el.className = 'demo-gate';
       document.getElementById('demo-' + id + '-verdict').textContent = 'waiting';
@@ -1356,7 +1414,9 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
         if (data.pass === true) {
           el.classList.add('gate-pass');
           verdict.textContent = data.verdict;
-          verdict.className = 'demo-gate-verdict v-allow';
+          verdict.className = data.verdict === 'LOGGED'
+            ? 'demo-gate-verdict v-logged'
+            : 'demo-gate-verdict v-allow';
         } else if (data.pass === 'warn') {
           el.classList.add('gate-warn');
           verdict.textContent = data.verdict;
@@ -1413,7 +1473,7 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
       }
 
       if (s[g].pass === false) {
-        // Block — skip remaining gates
+        // Block — skip remaining enforcement gates
         for (let j = i + 1; j < gates.length; j++) {
           await animateGate(gates[j], s[gates[j]], 200);
           step++;
@@ -1421,6 +1481,14 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
         }
         break;
       }
+    }
+
+    // AuditGate always runs (logs both allows and blocks)
+    await animateGate('audit', s.audit, 400);
+    step++;
+    await addLog(s.logs[step], 150);
+    if (s.audit.time !== '—') {
+      totalUs += parseFloat(s.audit.time);
     }
 
     // Action
@@ -1528,6 +1596,12 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
           <td class="x">✗</td>
           <td>Alerts after spend</td>
           <td><span class="check">✓ BudgetGate</span></td>
+        </tr>
+        <tr>
+          <td>Audit trail</td>
+          <td class="x">✗</td>
+          <td>Vendor-locked logs</td>
+          <td><span class="check">✓ AuditGate (hash-chained)</span></td>
         </tr>
         <tr>
           <td>Licensing</td>
