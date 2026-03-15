@@ -752,6 +752,7 @@
   <ul class="nav-links">
     <li><a href="#gates">Gates</a></li>
     <li><a href="#code">Quick Start</a></li>
+    <li><a href="#integrations">Integrations</a></li>
     <li><a href="#demo">Demo</a></li>
     <li><a href="#compare">Why Us</a></li>
     <li><a href="https://github.com/actiongate-oss" target="_blank">GitHub</a></li>
@@ -765,7 +766,7 @@
   <div class="hero-content">
     <div class="hero-badge">
       <span class="hero-badge-dot"></span>
-      v0.2.1 — All Four Gates Live on PyPI
+      v0.3 — Four Gates + Framework Adapters on PyPI
     </div>
 
     <h1>
@@ -833,7 +834,7 @@
   <div class="trust-strip">
     <div class="trust-item">
       <span class="trust-icon">⚡</span>
-      <span><span class="trust-value">&lt;0.1ms</span> gate evaluation (benchmarked)</span>
+      <span><span class="trust-value">&lt;1ms</span> gate evaluation (benchmarked)</span>
     </div>
     <div class="trust-item">
       <span class="trust-icon">☁️</span>
@@ -845,7 +846,7 @@
     </div>
     <div class="trust-item">
       <span class="trust-icon">📦</span>
-      <span><span class="trust-value">~500 LOC</span> per gate — auditable in an afternoon</span>
+      <span><span class="trust-value">&lt;500 LOC</span> per gate (core) — auditable in an afternoon</span>
     </div>
   </div>
 </section>
@@ -1008,22 +1009,75 @@ engine <span class="op">=</span> <span class="cls">Engine</span>()
       <span class="code-filename">audit_example.py</span>
     </div>
     <div class="code-body">
-<pre><span class="kw">from</span> auditgate <span class="kw">import</span> <span class="cls">Engine</span>, <span class="cls">Trail</span>, <span class="cls">IntegrityMode</span>
+<pre><span class="kw">from</span> auditgate <span class="kw">import</span> <span class="cls">Engine</span>, <span class="cls">Trail</span>, <span class="cls">Verdict</span>, <span class="cls">Severity</span>
 
 <span class="cm"># Tamper-evident audit trail with hash chaining</span>
-engine <span class="op">=</span> <span class="cls">Engine</span>(integrity<span class="op">=</span><span class="cls">IntegrityMode</span>.CHAIN)
+engine <span class="op">=</span> <span class="cls">Engine</span>(recorded_by<span class="op">=</span><span class="str">"agent:1"</span>)
 trail <span class="op">=</span> <span class="cls">Trail</span>(<span class="str">"openai"</span>, <span class="str">"chat"</span>, <span class="str">"agent:1"</span>)
 
-<span class="cm"># Log gate decisions from ActionGate, BudgetGate, RuleGate</span>
-engine.record(trail, {
-    <span class="str">"actiongate"</span>: ag_decision.to_dict(),
-    <span class="str">"budgetgate"</span>: bg_decision.to_dict(),
-    <span class="str">"rulegate"</span>:   rg_decision.to_dict(),
-})
+<span class="cm"># Log a gate decision</span>
+engine.record(trail,
+    verdict<span class="op">=</span><span class="cls">Verdict</span>.ALLOW,
+    severity<span class="op">=</span><span class="cls">Severity</span>.INFO,
+    gate_type<span class="op">=</span><span class="str">"actiongate"</span>,
+    gate_identity<span class="op">=</span><span class="str">"openai:chat@agent:1"</span>,
+    detail<span class="op">=</span>ag_decision.to_dict(),
+)
 
 <span class="cm"># Every entry is SHA-256 hashed and chained.</span>
-<span class="cm"># Verify integrity at any time:</span>
-<span class="kw">assert</span> engine.verify(trail)  <span class="cm"># True if no tampering</span></pre>
+<span class="cm"># Verify integrity via CLI:</span>
+<span class="cm"># $ auditgate verify audit_log.json</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ── INTEGRATIONS ── -->
+<section id="integrations" class="reveal">
+  <div class="section-label">// Framework Adapters</div>
+  <h2 class="section-title">Works with your stack.</h2>
+  <p class="section-desc">
+    Drop-in adapters for OpenAI, LangChain, and FastAPI. All four gates evaluate on every call.
+    Adapters are Apache-2.0. The <code>[all]</code> extra includes RuleGate and AuditGate (BUSL-1.1).
+  </p>
+
+  <div class="gates-grid" style="grid-template-columns: repeat(3, 1fr);">
+    <div class="gate-card gate-live">
+      <div class="gate-status"><span class="gate-status-dot"></span> Live</div>
+      <h3>OpenAI</h3>
+      <p>Gate function/tool calls before execution. Works with both Chat Completions and Responses API.</p>
+      <div class="gate-primitive">pip install actiongate-openai</div>
+    </div>
+
+    <div class="gate-card gate-live">
+      <div class="gate-status"><span class="gate-status-dot"></span> Live</div>
+      <h3>LangChain</h3>
+      <p>@gated_tool decorator and GatedTool class. Raises ToolException on block — agents handle it automatically.</p>
+      <div class="gate-primitive">pip install actiongate-langchain</div>
+    </div>
+
+    <div class="gate-card gate-live">
+      <div class="gate-status"><span class="gate-status-dot"></span> Live</div>
+      <h3>FastAPI</h3>
+      <p>Route decorator and Depends() injection. Returns 429 for rate/budget blocks, 403 for policy violations.</p>
+      <div class="gate-primitive">pip install actiongate-fastapi</div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+    <div class="install-box" onclick="navigator.clipboard.writeText('pip install actiongate-openai[all]')">
+      <span class="prompt">$</span>
+      <span class="cmd">pip install actiongate-openai[all]</span>
+      <span class="copy-hint">click to copy</span>
+    </div>
+    <div class="install-box" onclick="navigator.clipboard.writeText('pip install actiongate-langchain[all]')">
+      <span class="prompt">$</span>
+      <span class="cmd">pip install actiongate-langchain[all]</span>
+      <span class="copy-hint">click to copy</span>
+    </div>
+    <div class="install-box" onclick="navigator.clipboard.writeText('pip install actiongate-fastapi[all]')">
+      <span class="prompt">$</span>
+      <span class="cmd">pip install actiongate-fastapi[all]</span>
+      <span class="copy-hint">click to copy</span>
     </div>
   </div>
 </section>
@@ -1051,6 +1105,10 @@ engine.record(trail, {
     <button class="demo-btn" data-scenario="budget">
       <span class="demo-btn-dot" style="background: var(--accent-red);"></span>
       Budget exceeded
+    </button>
+    <button class="demo-btn" data-scenario="dynamic">
+      <span class="demo-btn-dot" style="background: var(--accent-amber);"></span>
+      Dynamic cost
     </button>
     <button class="demo-btn" data-scenario="policy">
       <span class="demo-btn-dot" style="background: var(--accent-red);"></span>
@@ -1298,10 +1356,10 @@ engine.record(trail, {
 (function() {
   const scenarios = {
     allow: {
-      ag: { verdict: 'ALLOW', time: '4.2µs', check: 'calls=7 / max=10 in 60s window', pass: true },
-      bg: { verdict: 'ALLOW', time: '0.9µs', check: 'spent=$31.40 / limit=$50.00', pass: true },
-      rg: { verdict: 'ALLOW', time: '3.1µs', check: '2/2 predicates passed', pass: true },
-      audit: { verdict: 'LOGGED', time: '1.4µs', check: 'chain: 3 decisions → SHA-256 hash', pass: true },
+      ag: { verdict: 'ALLOW', time: '68µs', check: 'calls=7 / max=10 in 60s window', pass: true },
+      bg: { verdict: 'ALLOW', time: '42µs', check: 'spent=$31.40 / limit=$50.00', pass: true },
+      rg: { verdict: 'ALLOW', time: '55µs', check: '2/2 predicates passed', pass: true },
+      audit: { verdict: 'LOGGED', time: '71µs', check: 'chain: 3 decisions → SHA-256 hash', pass: true },
       action: { verdict: 'EXECUTED', check: 'openai.chat("Summarize Q3 report")', pass: true },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
@@ -1309,15 +1367,15 @@ engine.record(trail, {
         { cls: 'log-allow', text: '✓ BudgetGate  ALLOW  cost=$0.03  remaining=$18.57' },
         { cls: 'log-allow', text: '✓ RuleGate    ALLOW  no_pii=pass  business_hours=pass' },
         { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=a3f8..c2d1  integrity=CHAIN' },
-        { cls: 'log-info', text: '⚡ All gates passed in 9.6µs — executing action' },
+        { cls: 'log-info', text: '⚡ All gates passed in 236µs — executing action' },
         { cls: 'log-allow', text: '✓ openai.chat() → 200 OK (342ms)' },
       ]
     },
     rate: {
-      ag: { verdict: 'BLOCK', time: '3.8µs', check: 'calls=10 / max=10 — RATE_LIMIT', pass: false },
+      ag: { verdict: 'BLOCK', time: '61µs', check: 'calls=10 / max=10 — RATE_LIMIT', pass: false },
       bg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
       rg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
-      audit: { verdict: 'LOGGED', time: '1.2µs', check: 'chain: BLOCK recorded → SHA-256 hash', pass: true },
+      audit: { verdict: 'LOGGED', time: '65µs', check: 'chain: BLOCK recorded → SHA-256 hash', pass: true },
       action: { verdict: 'BLOCKED', check: 'openai.chat("Draft email #47")', pass: false },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
@@ -1326,14 +1384,14 @@ engine.record(trail, {
         { cls: 'log-dim', text: '— RuleGate    skipped (pipeline halted)' },
         { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=b7e2..f491  block_recorded=true' },
         { cls: 'log-block', text: '⛔ Action blocked — agent exceeded 10 calls/min' },
-        { cls: 'log-info', text: '↳ Blocked(decision) raised in 5.0µs' },
+        { cls: 'log-info', text: '↳ Blocked(decision) raised in 126µs' },
       ]
     },
     budget: {
-      ag: { verdict: 'ALLOW', time: '4.1µs', check: 'calls=3 / max=10 in 60s window', pass: true },
-      bg: { verdict: 'BLOCK', time: '1.1µs', check: 'spent=$49.82 + $0.50 > $50.00', pass: false },
+      ag: { verdict: 'ALLOW', time: '65µs', check: 'calls=3 / max=10 in 60s window', pass: true },
+      bg: { verdict: 'BLOCK', time: '48µs', check: 'spent=$49.82 + $0.50 > $50.00', pass: false },
       rg: { verdict: 'SKIP', time: '—', check: 'skipped (upstream block)', pass: null },
-      audit: { verdict: 'LOGGED', time: '1.3µs', check: 'chain: BLOCK recorded → SHA-256 hash', pass: true },
+      audit: { verdict: 'LOGGED', time: '69µs', check: 'chain: BLOCK recorded → SHA-256 hash', pass: true },
       action: { verdict: 'BLOCKED', check: 'openai.chat("Generate 10K-word analysis")', pass: false },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests openai:chat (est. $0.50)' },
@@ -1342,14 +1400,31 @@ engine.record(trail, {
         { cls: 'log-dim', text: '— RuleGate    skipped (pipeline halted)' },
         { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=c4d9..e7a2  block_recorded=true' },
         { cls: 'log-block', text: '⛔ Action blocked — budget exceeded' },
-        { cls: 'log-info', text: '↳ BudgetExceeded(decision) raised in 6.5µs' },
+        { cls: 'log-info', text: '↳ BudgetExceeded(decision) raised in 182µs' },
+      ]
+    },
+    dynamic: {
+      ag: { verdict: 'ALLOW', time: '63µs', check: 'calls=5 / max=10 in 60s window', pass: true },
+      bg: { verdict: 'ALLOW', time: '52µs', check: 'reserve $2.00 → commit $0.87 actual', pass: 'warn' },
+      rg: { verdict: 'ALLOW', time: '51µs', check: '2/2 predicates passed', pass: true },
+      audit: { verdict: 'LOGGED', time: '70µs', check: 'chain: reserve+commit → SHA-256 hash', pass: true },
+      action: { verdict: 'EXECUTED', check: 'openai.chat("Analyze this document…")', pass: true },
+      logs: [
+        { cls: 'log-dim', text: '→ agent:1 requests openai:chat (dynamic cost)' },
+        { cls: 'log-allow', text: '✓ ActionGate  ALLOW  calls=5/10  window=60s' },
+        { cls: 'log-warn', text: '⟳ BudgetGate  RESERVE  $2.00 held  spent=$28.40 / limit=$50.00' },
+        { cls: 'log-allow', text: '✓ RuleGate    ALLOW  no_pii=pass  business_hours=pass' },
+        { cls: 'log-info', text: '⚡ Gates passed — executing action with reservation' },
+        { cls: 'log-allow', text: '✓ openai.chat() → 200 OK (1,247ms)  actual_cost=$0.87' },
+        { cls: 'log-warn', text: '⟳ BudgetGate  COMMIT  reserved=$2.00 → actual=$0.87  released=$1.13' },
+        { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=f2a1..e9b3  integrity=CHAIN' },
       ]
     },
     policy: {
-      ag: { verdict: 'ALLOW', time: '4.0µs', check: 'calls=2 / max=10 in 60s window', pass: true },
-      bg: { verdict: 'ALLOW', time: '0.8µs', check: 'spent=$12.30 / limit=$50.00', pass: true },
-      rg: { verdict: 'DENY', time: '2.9µs', check: 'no_pii FAILED — "ssn" detected in query', pass: false },
-      audit: { verdict: 'LOGGED', time: '1.5µs', check: 'chain: DENY recorded → SHA-256 hash', pass: true },
+      ag: { verdict: 'ALLOW', time: '64µs', check: 'calls=2 / max=10 in 60s window', pass: true },
+      bg: { verdict: 'ALLOW', time: '44µs', check: 'spent=$12.30 / limit=$50.00', pass: true },
+      rg: { verdict: 'DENY', time: '49µs', check: 'no_pii FAILED — "ssn" detected in query', pass: false },
+      audit: { verdict: 'LOGGED', time: '68µs', check: 'chain: DENY recorded → SHA-256 hash', pass: true },
       action: { verdict: 'BLOCKED', check: 'db.query("SELECT * WHERE ssn=...")', pass: false },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests db:query' },
@@ -1358,14 +1433,14 @@ engine.record(trail, {
         { cls: 'log-block', text: '✗ RuleGate    DENY   violated=no_pii  "ssn" in query' },
         { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=d1f3..b8c4  violation_recorded=true' },
         { cls: 'log-block', text: '⛔ Action blocked — policy violation' },
-        { cls: 'log-info', text: '↳ PolicyViolation(decision) raised in 9.2µs' },
+        { cls: 'log-info', text: '↳ PolicyViolation(decision) raised in 225µs' },
       ]
     },
     edge: {
-      ag: { verdict: 'ALLOW', time: '4.5µs', check: 'calls=9 / max=10 — remaining=1', pass: true },
-      bg: { verdict: 'ALLOW', time: '1.2µs', check: 'spent=$49.50 + $0.03 ≤ $50.00 — remaining=$0.47', pass: true },
-      rg: { verdict: 'ALLOW', time: '3.0µs', check: '2/2 predicates passed', pass: true },
-      audit: { verdict: 'LOGGED', time: '1.4µs', check: 'chain: 3 decisions + warnings → SHA-256 hash', pass: true },
+      ag: { verdict: 'ALLOW', time: '72µs', check: 'calls=9 / max=10 — remaining=1', pass: true },
+      bg: { verdict: 'ALLOW', time: '47µs', check: 'spent=$49.50 + $0.03 ≤ $50.00 — remaining=$0.47', pass: true },
+      rg: { verdict: 'ALLOW', time: '53µs', check: '2/2 predicates passed', pass: true },
+      audit: { verdict: 'LOGGED', time: '66µs', check: 'chain: 3 decisions + warnings → SHA-256 hash', pass: true },
       action: { verdict: 'EXECUTED', check: 'openai.chat("Quick summary")', pass: true },
       logs: [
         { cls: 'log-dim', text: '→ agent:1 requests openai:chat' },
@@ -1375,7 +1450,7 @@ engine.record(trail, {
         { cls: 'log-warn', text: '  ↳ listener: remaining=$0.47 — budget nearly exhausted' },
         { cls: 'log-allow', text: '✓ RuleGate    ALLOW  no_pii=pass  business_hours=pass' },
         { cls: 'log-allow', text: '✓ AuditGate   LOGGED  chain_hash=e5a7..d3f2  integrity=CHAIN' },
-        { cls: 'log-info', text: '⚡ All gates passed in 10.1µs — executing action' },
+        { cls: 'log-info', text: '⚡ All gates passed in 238µs — executing action' },
         { cls: 'log-allow', text: '✓ openai.chat() → 200 OK (289ms)' },
       ]
     }
@@ -1604,6 +1679,12 @@ engine.record(trail, {
           <td><span class="check">✓ AuditGate (hash-chained)</span></td>
         </tr>
         <tr>
+          <td>Framework adapters</td>
+          <td class="x">✗</td>
+          <td>Vendor SDKs</td>
+          <td><span class="check">✓ OpenAI, LangChain, FastAPI</span></td>
+        </tr>
+        <tr>
           <td>Licensing</td>
           <td>Proprietary</td>
           <td>Proprietary</td>
@@ -1643,9 +1724,8 @@ engine.record(trail, {
   <div class="footer-left">© 2026 ActionGate OSS · Apache-2.0 &amp; BUSL-1.1</div>
   <ul class="footer-links">
     <li><a href="https://github.com/actiongate-oss" target="_blank">GitHub</a></li>
-    <li><a href="#">Docs</a></li>
-    <li><a href="#">SEMANTICS.md</a></li>
-    <li><a href="#">Discord</a></li>
+    <li><a href="https://github.com/orgs/actiongate-oss/repositories" target="_blank">Docs</a></li>
+    <li><a href="https://github.com/actiongate-oss/actiongate/blob/main/SEMANTICS.md" target="_blank">SEMANTICS.md</a></li>
   </ul>
 </footer>
 
