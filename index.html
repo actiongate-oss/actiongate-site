@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ActionGate — Intent Is Cheap. We Guard the Last Checkpoint.</title>
-<meta name="description" content="Deterministic enforcement primitives for autonomous AI agents. Rate limits, cost caps, and policy rules — evaluated in microseconds, before your agent acts.">
+<meta name="description" content="OPA for AI actions. Composable enforcement primitives for autonomous AI agents. Rate limits, cost caps, and policy rules — evaluated in microseconds, before your agent acts.">
 <meta property="og:title" content="ActionGate — Intent Is Cheap. We Guard the Last Checkpoint.">
-<meta property="og:description" content="Deterministic enforcement primitives for autonomous AI agents. Rate limits, cost caps, and policy rules — evaluated in microseconds.">
+<meta property="og:description" content="OPA for AI actions. Composable enforcement primitives for autonomous AI agents. Rate limits, cost caps, and policy rules — evaluated in microseconds.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://actiongate.dev">
 <meta name="twitter:card" content="summary_large_image">
@@ -775,8 +775,8 @@
     </h1>
 
     <p class="hero-sub">
-      Deterministic enforcement primitives for autonomous AI agents.
-      Rate limits, cost caps, policy rules, and tamper-evident audit trails — evaluated in microseconds,
+      OPA for AI actions. Composable enforcement primitives that evaluate rate limits,
+      cost caps, policy rules, and audit trails in microseconds —
       before your agent acts. Not a platform. Not a dashboard. Primitives.
     </p>
 
@@ -1036,11 +1036,11 @@ engine.record(trail,
   <div class="section-label">// Framework Adapters</div>
   <h2 class="section-title">Works with your stack.</h2>
   <p class="section-desc">
-    Drop-in adapters for OpenAI, LangChain, and FastAPI. All four gates evaluate on every call.
+    Drop-in adapters for OpenAI and LangChain. All four gates evaluate on every call.
     Adapters are Apache-2.0. The <code>[all]</code> extra includes RuleGate and AuditGate (BUSL-1.1).
   </p>
 
-  <div class="gates-grid" style="grid-template-columns: repeat(3, 1fr);">
+  <div class="gates-grid" style="grid-template-columns: repeat(2, 1fr);">
     <div class="gate-card gate-live">
       <div class="gate-status"><span class="gate-status-dot"></span> Live</div>
       <h3>OpenAI</h3>
@@ -1054,13 +1054,6 @@ engine.record(trail,
       <p>@gated_tool decorator and GatedTool class. Raises ToolException on block — agents handle it automatically.</p>
       <div class="gate-primitive">pip install actiongate-langchain</div>
     </div>
-
-    <div class="gate-card gate-live">
-      <div class="gate-status"><span class="gate-status-dot"></span> Live</div>
-      <h3>FastAPI</h3>
-      <p>Route decorator and Depends() injection. Returns 429 for rate/budget blocks, 403 for policy violations.</p>
-      <div class="gate-primitive">pip install actiongate-fastapi</div>
-    </div>
   </div>
 
   <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
@@ -1072,11 +1065,6 @@ engine.record(trail,
     <div class="install-box" onclick="navigator.clipboard.writeText('pip install actiongate-langchain[all]')">
       <span class="prompt">$</span>
       <span class="cmd">pip install actiongate-langchain[all]</span>
-      <span class="copy-hint">click to copy</span>
-    </div>
-    <div class="install-box" onclick="navigator.clipboard.writeText('pip install actiongate-fastapi[all]')">
-      <span class="prompt">$</span>
-      <span class="cmd">pip install actiongate-fastapi[all]</span>
       <span class="copy-hint">click to copy</span>
     </div>
   </div>
@@ -1682,7 +1670,7 @@ engine.record(trail,
           <td>Framework adapters</td>
           <td class="x">✗</td>
           <td>Vendor SDKs</td>
-          <td><span class="check">✓ OpenAI, LangChain, FastAPI</span></td>
+          <td><span class="check">✓ OpenAI, LangChain</span></td>
         </tr>
         <tr>
           <td>Licensing</td>
